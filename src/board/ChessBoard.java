@@ -12,13 +12,12 @@ import pieces.Queen;
 import pieces.Rook;
 
 public class ChessBoard extends Group {
+	public static ArrayList<ArrayList<Square>> map = new ArrayList<ArrayList<Square>>();
 
-	public static ArrayList<ArrayList<Square>> all_squares = new ArrayList<ArrayList<Square>>();
-	
 	public ChessBoard() {
 
 		for (int row = 0; row < 8; row++) {
-			ArrayList<Square> arrRow = new ArrayList<Square>();
+			ArrayList<Square> rad = new ArrayList<Square>();
 			for (int col = 0; col < 8; col++) {
 
 				Color bg = Color.SANDYBROWN;
@@ -26,85 +25,58 @@ public class ChessBoard extends Group {
 					bg = Color.WHITE;
 				}
 
-				
-				
 				Square s = new Square(bg);
+				rad.add(s);
 				s.setTranslateX(col * Square.SIZE);
 				s.setTranslateY(row * Square.SIZE);
 				this.getChildren().add(s);
-				arrRow.add(s);
+
+				rad.add(s);
 				
-				//PAWNS
-				if(row == 1){
+				if (row == 1) {
 					s.addPiece(new Pawn(Color.BLACK));
-				}
-				
-				if(row == 6){
+				}	
+				if (row == 6) {
 					s.addPiece(new Pawn(Color.WHITE));
 				}
-				
-				//ROOKS
-				if(row == 0){
-					if(col == 0 || col == 7){
-						s.addPiece(new Rook(Color.BLACK));
-					}
+				if (row == 0 && (col == 2 || col == 5)) {
+					s.addPiece(new Bishop(Color.BLACK));
 				}
-				if(row == 7){
-					if(col == 0 || col == 7){
-						s.addPiece(new Rook(Color.WHITE));
-					}
+				if (row == 7 && (col == 2 || col == 5)) {
+					s.addPiece(new Bishop(Color.WHITE));
 				}
-				
-				//KNIGHTS
-				if(row == 0){
-					if(col == 1 || col == 6){
-						s.addPiece(new Knight(Color.BLACK));
-					}
+				if (row == 0 && (col == 0 || col == 7)) {
+					s.addPiece(new Rook(Color.BLACK));
 				}
-				if(row == 7){
-					if(col == 1 || col == 6){
-						s.addPiece(new Knight(Color.WHITE));
-					}
+				if (row == 7 && (col == 0 || col == 7)) {
+					s.addPiece(new Rook(Color.WHITE));
 				}
-				
-				//BISHOPS
-				if(row == 0){
-					if(col == 2 || col == 5){
-						s.addPiece(new Bishop(Color.BLACK));
-					}
+				if (row == 0 && (col == 1 || col == 6)) {
+					s.addPiece(new Knight(Color.BLACK));
 				}
-				if(row == 7){
-					if(col == 2 || col == 5){
-						s.addPiece(new Bishop(Color.WHITE));
-					}
+				if (row == 7 && (col == 1 || col == 6)) {
+					s.addPiece(new Knight(Color.WHITE));
 				}
-				
-				//QUEENS
-				if(row == 0){
-					if(col == 3){
-						s.addPiece(new Queen(Color.BLACK));
-					}
+				if (row == 0 && (col == 4)) {
+					s.addPiece(new King(Color.BLACK));
 				}
-				if(row == 7){
-					if(col == 3){
-						s.addPiece(new Queen(Color.WHITE));
-					}
+				if (row == 7 && (col == 4)) {
+					s.addPiece(new King(Color.WHITE));
 				}
-				
-				//KINGS
-				if(row == 0){
-					if(col == 4){
-						s.addPiece(new King(Color.BLACK));
-					}
+				if (row == 0 && (col == 3)) {
+					s.addPiece(new Queen(Color.BLACK));
 				}
-				if(row == 7){
-					if(col == 4){
-						s.addPiece(new King(Color.WHITE));
-					}
+				if (row == 7 && (col == 3)) {
+					s.addPiece(new Queen(Color.WHITE));
 				}
 			}
-			all_squares.add(arrRow);
+			map.add(rad);
 
 		}
 	}
+	
+	public static Square getSquare(int x, int y){
+		return map.get(y).get(x);
+	}
+	
 }

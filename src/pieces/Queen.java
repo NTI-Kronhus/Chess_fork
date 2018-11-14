@@ -2,11 +2,13 @@ package pieces;
 
 import javafx.scene.paint.Color;
 
-public class Queen extends Piece{
+public class Queen extends Piece {
+
 	
-	public Queen(Color c){
+	public Queen(Color c) {
 		super(c);
 	}
 
+	
+	
 }
-

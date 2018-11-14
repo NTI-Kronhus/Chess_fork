@@ -8,13 +8,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 public abstract class Piece extends Group {
-	
-	private Color color;
-	
+
 	public Piece(Color c) {
 
-		color = c;
-		
 		String COLOR = "WHITE";
 		if (c == Color.BLACK) {
 			COLOR = "BLACK";
@@ -28,8 +24,6 @@ public abstract class Piece extends Group {
 
 	}
 
-	public Color getColor(){
-		return this.color;
-	}
+	
 
 }
