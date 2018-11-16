@@ -31,7 +31,6 @@ public class ChessBoard extends Group {
 				s.setTranslateY(row * Square.SIZE);
 				this.getChildren().add(s);
 
-				rad.add(s);
 				
 				if (row == 1) {
 					s.addPiece(new Pawn(Color.BLACK));

@@ -1,15 +1,20 @@
 package board;
 
+import java.util.ArrayList;
+
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import pieces.Piece;
 
 public class Square extends Group {
 
 	public static final double SIZE = 80;
-	public static Square active;
-	
+
+	private static Square active;
+	private static ArrayList<Square> marked = new ArrayList<Square>();
+
 	private Rectangle bg;
 	private Color originalColor;
 	private Piece piece;
@@ -22,26 +27,32 @@ public class Square extends Group {
 		this.setOnMouseClicked(event -> {
 
 			// EXEMPEL:
-			if (hasPiece()) {	
+			if (hasPiece()) {
 				makeActive();
+			} else {
+				if (active != null) {
+					active.makeInactive();
+				}
 			}
+
 		});
 	}
-	
-	public void makeInactive(){
+
+	public void makeInactive() {
 		this.getBackground().setFill(originalColor);
 		active = null;
+		removeMoveMarks();
 	}
-	
-	
-	public void makeActive(){
-		if(active != null){
+
+	public void makeActive() {
+		if (active != null) {
 			active.makeInactive();
 		}
+
+		piece.showMove(getX(), getY());
 		active = this;
 		this.getBackground().setFill(Color.RED);
 	}
-	
 
 	public void addPiece(Piece p) {
 		this.piece = p;
@@ -55,24 +66,41 @@ public class Square extends Group {
 	public Rectangle getBackground() {
 		return this.bg;
 	}
-	
-	public int getX(){
+
+	public int getX() {
 		int y = getY();
 		for (int i = 0; i < 8; i++) {
-			if(ChessBoard.map.get(getY()).get(i) == this){
+			if (ChessBoard.map.get(getY()).get(i) == this) {
 				return i;
 			}
 		}
 		return -1;
-		
+
 	}
 
-	public int getY(){
+	public int getY() {
 		for (int i = 0; i < 8; i++) {
-			if(ChessBoard.map.get(i).contains(this)){
+			if (ChessBoard.map.get(i).contains(this)) {
 				return i;
 			}
 		}
 		return -1;
 	}
+
+	public static void removeMoveMarks() {
+		for (Square square : marked) {
+			square.getChildren().remove(square.getChildren().size() - 1);
+		}
+		marked.clear();
+	}
+
+	public void moveMark() {
+
+		Circle cir = new Circle(Square.SIZE / 2, Square.SIZE / 2, Square.SIZE / 8, Color.LIGHTGRAY);
+		this.getChildren().add(cir);
+
+		marked.add(this);
+
+	}
+
 }
