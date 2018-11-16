@@ -6,18 +6,18 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import pieces.Pawn;
 import pieces.Piece;
 
 public class Square extends Group {
 
 	public static final double SIZE = 80;
-
-	private static Square active;
-	private static ArrayList<Square> marked = new ArrayList<Square>();
-
 	private Rectangle bg;
 	private Color originalColor;
 	private Piece piece;
+	public static Square active;
+	private int turnCounter = 1;
+	public static ArrayList<Square> moveMarked = new ArrayList<Square>();
 
 	public Square(Color c) {
 		originalColor = c;
@@ -26,35 +26,109 @@ public class Square extends Group {
 
 		this.setOnMouseClicked(event -> {
 
+			if (hasMoveMark()) {
+				Piece p = active.piece;
+				active.piece = null;
+				active.makeInactive();
+				this.addPiece(p);
+				this.piece.move();
+				return;
+			}
+
 			// EXEMPEL:
 			if (hasPiece()) {
 				makeActive();
+
+				
+
 			} else {
 				if (active != null) {
+
 					active.makeInactive();
 				}
+
 			}
 
 		});
+
 	}
 
-	public void makeInactive() {
-		this.getBackground().setFill(originalColor);
-		active = null;
-		removeMoveMarks();
+	private boolean hasMoveMark() {
+
+		return this.getChildren().get(this.getChildren().size() - 1) instanceof Circle;
+
 	}
 
-	public void makeActive() {
+	private int col() {
+		for (int i = 0; i < ChessBoard.all_squares.size(); i++) {
+			if (ChessBoard.all_squares.get(i).contains(this)) {
+				return ChessBoard.all_squares.get(i).indexOf(this);
+			}
+		}
+		return -1;
+	}
+
+	public int row() {
+		for (int i = 0; i < ChessBoard.all_squares.size(); i++) {
+			if (ChessBoard.all_squares.get(i).contains(this)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	public void moveMark() {
+		if (this.hasPiece()) {
+			// OM OLIKA FÄRG
+			if (this.piece.getColor() != active.piece.getColor()) {
+				attackMark();
+			}
+			return;
+		}
+
+		Circle cir = new Circle(SIZE / 2, SIZE / 2, SIZE / 8);
+		this.getChildren().add(cir);
+		moveMarked.add(this);
+	}
+
+	private void attackMark() {
+		Circle cir = new Circle(SIZE / 2, SIZE / 2, SIZE / 8, Color.RED);
+		this.getChildren().add(cir);
+		moveMarked.add(this);
+	}
+
+	private void makeActive() {
 		if (active != null) {
 			active.makeInactive();
 		}
 
-		piece.showMove(getX(), getY());
 		active = this;
+		
+		this.piece.showMove(row(),col());
+
 		this.getBackground().setFill(Color.RED);
+
+	}
+
+	private void makeInactive() {
+		for (Square square : moveMarked) {
+			square.removeMoveMark();
+		}
+		moveMarked.clear();
+		active = null;
+		this.getBackground().setFill(originalColor);
+
+	}
+
+	private void removeMoveMark() {
+		this.getChildren().remove(this.getChildren().size() - 1);
+
 	}
 
 	public void addPiece(Piece p) {
+		if (this.piece != null) {
+			this.getChildren().remove(this.piece);
+		}
 		this.piece = p;
 		this.getChildren().add(p);
 	}
@@ -67,40 +141,13 @@ public class Square extends Group {
 		return this.bg;
 	}
 
-	public int getX() {
-		int y = getY();
-		for (int i = 0; i < 8; i++) {
-			if (ChessBoard.map.get(getY()).get(i) == this) {
-				return i;
-			}
+	public Boolean turn(int i) {
+		boolean whiteTurn = true;
+		if (i % 2 == 0) {
+			return whiteTurn = false;
+		} else {
+			return whiteTurn;
 		}
-		return -1;
-
-	}
-
-	public int getY() {
-		for (int i = 0; i < 8; i++) {
-			if (ChessBoard.map.get(i).contains(this)) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
-	public static void removeMoveMarks() {
-		for (Square square : marked) {
-			square.getChildren().remove(square.getChildren().size() - 1);
-		}
-		marked.clear();
-	}
-
-	public void moveMark() {
-
-		Circle cir = new Circle(Square.SIZE / 2, Square.SIZE / 2, Square.SIZE / 8, Color.LIGHTGRAY);
-		this.getChildren().add(cir);
-
-		marked.add(this);
-
 	}
 
 }

@@ -2,7 +2,7 @@ package pieces;
 
 public interface Moveable {
 
-	void showMove(int x, int y);
-	
-	
+	void showMove(int row, int col);
+	void move();
+
 }
