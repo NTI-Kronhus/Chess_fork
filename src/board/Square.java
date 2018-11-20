@@ -136,6 +136,10 @@ public class Square extends Group {
 	public boolean hasPiece() {
 		return this.piece != null;
 	}
+	
+	public Color getPieceColor(){
+		return this.piece.getColor();
+	}
 
 	public Rectangle getBackground() {
 		return this.bg;
